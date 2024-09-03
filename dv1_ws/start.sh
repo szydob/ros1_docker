@@ -10,6 +10,8 @@ source /home/dv1_ws/devel/setup.bash
 # Play rosbag
 rosbag play /home/rosbag1/bag1.bag -l &
 
+sleep 5
+source /home/dv1_ws/devel/setup.bash
 # Launch the ROS node
 roslaunch patchworkpp demo.launch
 
