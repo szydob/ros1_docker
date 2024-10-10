@@ -1,7 +1,5 @@
-# Ignore the src, build, devel directories inside dv1_ws
-dv1_ws/src/
-dv1_ws/build
-dv1_ws/devel
+# Ignore the dv_ws_ros1
+dv_ws_ros1/
 
 # Ignore the rosbag1 directory
 rosbag1/

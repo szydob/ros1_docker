@@ -1,68 +1,86 @@
-# Docker ROS1 Noetic for Running ROS Bags
+# Docker ROS1 Noetic Setup Guide
 
-## About the Setup
-This Docker environment is designed to run **ROS1 Noetic** specifically for replaying ROS bags in a containerized ROS workspace.
+## Overview
+This setup guide provides step-by-step instructions for running **ROS1 Noetic** in a Docker container, specifically designed for replaying ROS bags in a containerized ROS workspace.
 
 ## Prerequisites
-- Docker installed on your machine
-- Docker Compose installed
+Ensure you have the following software installed on your machine:
+- [Docker](https://docs.docker.com/get-started/)
+- [Docker Compose](https://docs.docker.com/compose/install/)
 
-## How to Set Up and Run
+## Setup Instructions
 
 ### Step 1: Create the ROS1 Workspace Directory
-Start by creating a directory called `ros1_ws` on your host machine:
-
+Create the workspace directory structure on your machine:
 ```bash
-mkdir ros1_ws
+mkdir -p ~/dv_ws_ros1/src
 ```
 
-### Step 2: Add the Necessary Files
-- Clone your `driverless-software` repository into the `dv1_ws/src` directory:
+### Step 2: Clone Your ROS Workspace Repository
+Clone your ROS workspace into the `src` directory:
+```bash
+git clone <your-repo-url> ~/dv_ws_ros1/src
+```
 
+### Step 3: Set Up the ROS Bag Directory
+Create a directory for your ROS bag files and add your ROS bags:
+```bash
+mkdir ~/rosbag1
+cp path/to/your/bag1.bag ~/rosbag1/
+```
+
+### Step 4: Update the Start Script
+Ensure the `start.sh` script references your ROS bag files correctly.
+
+1. Open the `start.sh` file:
+   ```bash
+   nano ros1_docker/start.sh
+   ```
+2. Update the line referencing the ROS bag file to:
+   ```bash
+   rosbag play /home/rosbag1/bag1.bag -l &
+   ```
+
+### Step 5: Build and Run the Docker Container
+To build and start the Docker container, use the following commands:
+
+1. If building the image for the first time or after making changes:
+   ```bash
+   docker compose up --build
+   ```
+2. If the image is already built and you only need to start the container:
+   ```bash
+   docker compose up
+   ```
+
+### Step 6: Access the Running Container
+The container will automatically execute the `start.sh` script to set up the ROS environment and replay the specified ROS bag. Modify `start.sh` as needed to fit your requirements.
+
+## Troubleshooting
+
+- **ROS Bag Playback Issues**:
+  - Verify that your `start.sh` script correctly points to the bag file location: `/home/rosbag1/bag1.bag`.
+  - Confirm that the bag files are present in the `~/rosbag1` directory.
+
+- **Problems Running `docker-compose up --build`**:
+  - If you encounter build or run errors, clean up unused Docker containers with:
     ```bash
-    git clone <driverless-software-repo-url> ros1_ws/dv1_ws/src
+    docker container prune
     ```
-
-- Place your ROS bag files (e.g., `bag1.bag`) into a directory named `rosbag1` inside `ros1_ws`:
-
-    ```bash
-    mkdir ros1_ws/rosbag1
-    cp /path/to/your/rosbag.bag ros1_ws/rosbag1
-    ```
-
-### Step 3: Edit the Start Script
-You will need to edit the `start.sh` script located in `ros1_ws/dv1_ws` to match your specific ROS bag file names and paths.
-
-- Open the `start.sh` file for editing:
-
-    ```bash
-    nano ros1_ws/dv1_ws/start.sh
-    ```
-
-- Modify the script to correctly reference your ROS bags. For example, if your bag file is named `bag1.bag`, ensure the script points to it correctly:
-
-    ```bash
-    rosbag play /home/rosbag1/bag1.bag -l &
-    ```
-
-### Step 4: Run the Docker Container
-To start the Docker container using Docker Compose:
-
-- If you haven't built the Docker image yet, or if you have made changes and want to rebuild it, use:
-
+  - Then, rebuild and run the container:
     ```bash
     docker compose up --build
     ```
 
-- If the image is already built and you just want to start the container:
+## Additional Tips
 
+- **Accessing the Docker Bash**:
+  - To interact with the running container's shell, open a new terminal window and run:
     ```bash
-    docker compose up
+    xhost +local:docker
+    docker exec -it ros_container bash
     ```
-
-### Step 5: Access the Running Container
-The container will automatically execute the start script, which sources the ROS environment and plays the specified ROS bag.
-
-## Troubleshooting
-- **ROS bags not found or playback errors**: Ensure that your `start.sh` script is correctly referencing the ROS bag files and that the paths are accurate.
-
+  - Once inside the container, you can run commands like `rviz`. To exit the container shell, simply type:
+    ```bash
+    exit
+    ```

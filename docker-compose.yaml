@@ -2,19 +2,19 @@ services:
   ros:
     build: .
     container_name: ros_container
-    working_dir: /home/dv1_ws
+    working_dir: /home
     privileged: true
     stdin_open: true
     tty: true
     networks:
       - ros_network
     volumes:
-      - ./dv1_ws:/home/dv1_ws
-      - ./rosbag1:/home/rosbag1
+      - ~/dv_ws_ros1:/home/dv_ws_ros1
+      - ~/rosbag1:/home/rosbag1
       - /tmp/.X11-unix:/tmp/.X11-unix
     environment:
       - DISPLAY=${DISPLAY}
-    entrypoint: ["/home/dv1_ws/start.sh"]
+    command: /bin/bash -c "/home/start.sh"
 
 networks:
   ros_network:
