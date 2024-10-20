@@ -20,22 +20,25 @@ cd ..
 source /home/dv_ws_ros1/devel/setup.bash
 
 # Start the ROS master in the background
-roscore &
+roscore &  # Starts roscore, the main communication hub for ROS nodes
 
 # Allow some time for roscore to start
 sleep 5
 
-# Play rosbag
-rosbag play /home/rosbag1/bag1.bag -l &
-
-#Launch rviz
-rviz -l &
+# Play rosbag in loop mode in the background
+rosbag play /home/rosbag1/bag1.bag -l &  # -l flag loops the playback of the bag file
 
 # Allow some time for the rosbag to start
 sleep 5
+
+# Source the workspace again to ensure environment variables are set
 source /home/dv_ws_ros1/devel/setup.bash
 
-# Launch the ROS node
-roslaunch patchworkpp demo.launch 
+# Launch rviz in the background to visualize data
+rviz &  # Starts RViz for data visualization
 
+# Launch the ROS node
+roslaunch patchworkpp demo.launch  # Replace with your specific ROS node launch command
+
+# Wait for all background processes to finish
 wait

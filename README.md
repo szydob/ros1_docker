@@ -41,10 +41,12 @@ Ensure the `start.sh` script references your ROS bag files correctly.
    rosbag play /home/rosbag1/bag1.bag -l &
    ```
 
+If you would like to launch different nodes, modify the **"Launch the ROS node"** section in the `start.sh` file. The container will automatically execute the `start.sh` script to set up the ROS environment and replay the specified ROS bag. Adjust `start.sh` as needed to fit your requirements.
+
 ### Step 5: Build and Run the Docker Container
 To build and start the Docker container, use the following commands:
 
-1. If building the image for the first time or after making changes:
+1. If you are building the image for the first time or after making changes:
    ```bash
    docker compose up --build
    ```
@@ -52,9 +54,6 @@ To build and start the Docker container, use the following commands:
    ```bash
    docker compose up
    ```
-
-### Step 6: Access the Running Container
-The container will automatically execute the `start.sh` script to set up the ROS environment and replay the specified ROS bag. Modify `start.sh` as needed to fit your requirements.
 
 ## Troubleshooting
 
@@ -72,15 +71,32 @@ The container will automatically execute the `start.sh` script to set up the ROS
     docker compose up --build
     ```
 
+- **RViz Not Launching**:
+  - Try accessing the Docker shell and starting RViz manually:
+    ```bash
+    docker exec -it ros_container bash
+    rviz
+    ```
+
 ## Additional Tips
 
-- **Accessing the Docker Bash**:
+- **Accessing the Docker Shell**:
   - To interact with the running container's shell, open a new terminal window and run:
     ```bash
-    xhost +local:docker
-    docker exec -it ros_container bash
+    xhost +local:docker  # Grants Docker access to your X11 server for GUI applications
+    docker exec -it ros_container bash  # Access the container's shell
     ```
   - Once inside the container, you can run commands like `rviz`. To exit the container shell, simply type:
     ```bash
     exit
+    ```
+
+- **Cleaning Up Unused Docker Images**:
+  - To list existing images, run:
+    ```bash
+    docker images
+    ```
+  - To remove unused images:
+    ```bash
+    docker rmi <image-id>
     ```
